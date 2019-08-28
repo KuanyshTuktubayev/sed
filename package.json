@@ -1,0 +1,35 @@
+{
+  "name": "sed",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./index.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "ejs": "~2.6.1",
+    "express": "~4.16.1",
+    "express-session": "^1.16.2",
+    "formidable": "^1.2.1",
+    "fs": "0.0.1-security",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1",
+    "password-hash": "^1.2.2",
+    "pg": "^7.12.1"
+  },
+  "description": "system e-doc",
+  "main": "index.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KuanyshTuktubayev/sed.git"
+  },
+  "author": "Kuanysh Tuktubayev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KuanyshTuktubayev/sed/issues"
+  },
+  "homepage": "https://github.com/KuanyshTuktubayev/sed#readme"
+}

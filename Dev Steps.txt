@@ -1,0 +1,18 @@
+starting steps of development:
+npm install -g express-generator
+express --view ejs
+npm install --save
+
+
+ready, and now lets check it for work:
+npm start
+
+
+ok, lets begin dev process. Stop listening port by pressing Ctrl-C. Now lets go to install needing modules:
+npm install --save express-session
+npm install --save pg
+npm install --save body-parser
+npm install --save fs
+npm install --save password-hash
+npm install --save formidable
+
