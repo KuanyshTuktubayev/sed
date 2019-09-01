@@ -15,4 +15,18 @@ npm install --save body-parser
 npm install --save fs
 npm install --save password-hash
 npm install --save formidable
+npm install --save require-fu
 
+I moved file "./bin/www" to "./" and rename to "index.js". So I changed "package.json":
+old version is:
+"scripts": {
+  "start": "node ./bin/www"
+},
+new version is;
+"scripts": {
+  "start": "node ./index.js"
+},
+After that I deleted file "./bin/www" with folder.
+Now lets add this project to GIT by creating "https://github.com/KuanyshTuktubayev/sed" and push files to there.
+
+Next actions are development.

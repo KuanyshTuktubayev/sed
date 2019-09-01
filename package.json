@@ -17,7 +17,8 @@
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
     "password-hash": "^1.2.2",
-    "pg": "^7.12.1"
+    "pg": "^7.12.1",
+    "require-fu": "^1.0.0"
   },
   "description": "system e-doc",
   "main": "index.js",
