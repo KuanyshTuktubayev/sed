@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<% include head_html %>
+	</head>
+	<body>
+		<div class="wrapper">
+			<% if(adminLogin){ %>
+				<div class="sidebar" data-color="purple" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
+					<% include admmnu %>
+				</div>
+				<div id="workArea" class="main-panel">
+					<nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+						<div class="container-fluid">
+							<button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="navbar-toggler-icon icon-bar"></span>
+							<span class="navbar-toggler-icon icon-bar"></span>
+							<span class="navbar-toggler-icon icon-bar"></span>
+							</button>
+							<div class="collapse navbar-collapse justify-content-end">
+								<ul class="navbar-nav">
+									<% include admheader %>
+								</ul>
+							</div>
+						</div>
+					</nav>
+					<div id="workArea" class="content">
+						<div class="container-fluid">
+							<div class="col-md-12">
+								<h2>Создание задачи</h2>
+								<!-- ТЕСТ -->
+								<div style="display: none;">test</div>
+								<!-- ТЕСТ -->
+							</div>
+							<div class="col-md-12">
+								<div class="card">
+									<div class="card-body">
+										<form name="formTask">
+												<div class="col-md-3">
+													<div class="form-group">
+														<label for="tasktypesList">Тип задач:</label>
+														<select name="tasktypesList" id="tasktypesList" class="form-control">
+															<% if (tasktypes) { %>
+																<% tasktypes.forEach(function(tasktypeRow) { %>
+																	<% if ( tasktypeRow.ID == 1) { %>
+																		<option value="<%= tasktypeRow.ID %>" selected><%= tasktypeRow.Name %> (ID: <%= tasktypeRow.ID %>)</option>
+																	<% } else { %>
+																		<option value="<%= tasktypeRow.ID %>"><%= tasktypeRow.Name %> (ID: <%= tasktypeRow.ID %>)</option>
+																	<% } %>
+																<% }); %>
+															<% } %>
+														</select>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-6">
+														<button class="btn btn-success" id="btnSaveEvent" type="button">Создать</button>
+													</div>
+												</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="preloader hidden" data-preloader></div>
+				<script>
+					$(document).ready(function(){
+						//GetTaskTypeList();
+					});
+					function GetTaskTypeList(){
+						$.ajax({
+							url: '/admin/tasktypesJson',
+							type: "GET",
+							success: function(result){
+								$('select#tasktypesList').empty();
+								var nTskIDTaskType = $("#taskIDTasktype").data("value");
+								$.each(result, function(index) {
+									if (result[index].ID == nTskIDTaskType) {
+										$('select#tasktypesList').append(
+											$('<option selected></option>')
+												.val(result[index].ID)
+												.html(result[index].Name)
+										);
+									}
+									else {
+										$('select#tasktypesList').append(
+												$('<option></option>')
+												.val(result[index].ID)
+												.html(result[index].Name)
+										);
+									}
+								});
+							}
+						});
+					};
+					$("#btnSaveTask").on('click', function(){
+						console.log("new task click event");
+						var nTaskID = 0;
+						nTaskID = $("#taskID").data("value");
+						var sURL = "/admin/tasks/new";
+						$('[data-preloader]').removeClass('hidden');
+ 						$('html').css('overflow', 'hidden');
+						$.ajax({
+							url: sURL,
+							type: "POST",
+						 	// timeout: 0,
+						 	async: true,
+							data: {
+								tasktypeID: $("select#tasktypesList").val(),
+								statusID: 1
+							},
+							success: function(result){
+								console.log("POST create /admin/tasks/new success: result="+result);
+							 	window.location.href = '/admin/tasks';
+						     	$('[data-preloader]').addClass('hidden');
+  								$('html').css('overflow', 'visible');
+							},
+							error: function(err){
+								console.log("POST /admin/tasks/new error:");
+								console.log(err);
+								setTimeout(function() { window.location.href = '/admin/tasks' }, 1 * 60 * 1000);
+							}
+						});
+					});
+					$('#rowsTable').on('click', '.clickable-row', function(task) {
+					  if($(this).hasClass('active')){
+							$(this).removeClass('active');
+					  } else {
+							$(this).addClass('active').siblings().removeClass('active');
+					  }
+					});
+					/*function readURL(input) {
+					    if (input.files && input.files[0]) {
+					        var reader = new FileReader();
+					        reader.onload = function (e) {
+					            $('#eventImage').attr('src', e.target.result);
+					        };
+					        reader.readAsDataURL(input.files[0]);
+					    }
+					}*/
+					function GetActualTaskStatus(){
+						console.log('GetActualTaskStatus::');
+						var nTaskID = $("#taskID").data("value");
+						$.ajax({
+							url: "/admin/taskGetStatus/"+nTaskID,
+							type: "GET",
+							success: function(result){
+									console.log('GetActualTaskStatus success:');
+									console.log(result);
+									$("#taskIDStatus").attr('data-value', result[0].IDStatus);
+									$("#taskIDStatus").html(result[0].StatusName);
+								},
+							error: function(err){
+								console.log("GET GetActualTaskStatus /admin/taskGetStatus/id error:");
+								console.log(err);
+							}
+						});
+					}
+					/*function ClickNewImg(){
+						$("input[id='eventImageFile']").click();
+					};*/
+					function ClearMsg(msgElement){
+						window.setTimeout( function(){
+							$(msgElement).html("");
+						}, 5000 );
+					}
+				</script>
+			<% } else { %>
+				<% include admloginform %>
+			<% } %>
+		</div>
+	</body>
+</html>

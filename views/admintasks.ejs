@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<% include head_html %>
+		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+		<script src="/javascripts/filter.js"></script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<% if(adminLogin){ %>
+				<div class="sidebar" data-color="purple" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
+					<% include admmnu %>
+				</div>
+				<div id="workArea" class="main-panel">
+					<nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+						<div class="container-fluid">
+							<button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="navbar-toggler-icon icon-bar"></span>
+							<span class="navbar-toggler-icon icon-bar"></span>
+							<span class="navbar-toggler-icon icon-bar"></span>
+							</button>
+							<div class="collapse navbar-collapse justify-content-end">
+								<ul class="navbar-nav">
+									<% include admheader %>
+								</ul>
+							</div>
+						</div>
+					</nav>
+					<div id="workArea" class="content">
+						<div class="container-fluid">
+							<div class="col-md-12">
+								<h2>Мероприятия</h2>
+							</div>
+							<% if(archive == false ){ %>
+								<div class="col-md-12">
+									<a class="btn btn-primary btn-create-event" href="/admin/tasks/new">Создать новое</a>
+									<p id="resultCreateMsg"></p>
+								</div>
+							<% } %>
+							<% if(tasksList) { %>
+								<div class="col-md-12">
+									<div class="card">
+										<div class="card-body">
+											<div class="table-responsive">
+												<table class="table trans">
+													<thead class="text-primary">
+														<th scope="col">ID</th>
+														<th scope="col">Название</th>
+														<th scope="col">Дата и время</th>
+														<th scope="col">Статус</th>
+														<% if(archive == false ){ %>
+															<th scope="col">Функции</th>
+														<% } %>
+													</thead>
+													<tbody>
+														<% tasksList.forEach(function(taskRow) { %>
+															<tr>
+																<td scope="row">
+																	<a href="/admin/task/<%= taskRow.ID %>"><span id="taskID<%= taskRow.ID %>"><%= taskRow.ID %></span></a>
+																</td>
+																<td>
+																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.Name %></a>
+																</td>
+																<td>
+																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.DateFrom %></a>
+																</td>
+																<td>
+																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.StatusName %></a>
+																</td>
+																<% if(archive == false ){ %>
+																	<td scope="row">
+																		<div class="row justify-content-left">
+																			<div class="col-lg-4 col-6">
+																				<button class="btn btn-danger btn-sm btn-archive" data-href="/admin/task/archive/<%= taskRow.ID %>">В архив</button>
+																			</div>
+																		</div>
+																	</td>
+																<% } %>
+															</tr>
+														<% }); %>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							<% } %>
+						</div>
+					</div>
+				</div>
+				<!-- HTML-код модального окна -->
+				<div id="myModalBox" class="modal fade">
+				  <div class="modal-dialog">
+				    <div class="modal-content">
+				      <!-- Заголовок модального окна -->
+				      <div class="modal-header">
+				      	<h4 class="modal-title">Подтверждение действия</h4>
+				        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				      </div>
+				      <!-- Основное содержимое модального окна -->
+				      <div class="modal-body">
+				        <!-- Вы действительно хотите удалить мероприятие? -->
+				        Переместить мероприятие в архив?
+				      </div>
+				      <!-- Футер модального окна -->
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-danger" id="deleteExecute">Да</button>
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+				<div class="preloader hidden" data-preloader></div>
+				<script>
+					let obj = null;
+
+					$('.btn-archive').click(function(){
+						obj = this;
+						$('#myModalBox').modal('show');
+					})
+					$('#deleteExecute').click(function(){
+						console.log(obj);
+						window.location.href = $(obj).attr('data-href');
+					})
+
+					$('.btn-copy').click(function(event){
+						event.preventDefault();
+						$('[data-preloader]').removeClass('hidden');
+ 						$('html').css('overflow', 'hidden');
+						$.get( $(this).attr('href') , function( data ) {
+						   	$('[data-preloader]').addClass('hidden');
+  							$('html').css('overflow', 'visible');
+  							document.location.href = '/admin/tasks/';
+						});
+						setTimeout(function() { window.location.href = '/admin/tasks' }, 5 * 60 * 1000);
+					})
+
+				</script>
+
+			<% } else{ %>
+				<% include admloginform %>
+			<% } %>
+		</div>
+	</body>
+</html>

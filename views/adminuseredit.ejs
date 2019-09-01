@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<% include head_html %>
+	</head>
+	<body>
+		<div class="wrapper">
+			<% if(adminLogin){ %>
+				<div class="sidebar" data-color="purple" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
+					<% include admmnu %>
+				</div>
+				<div id="workArea" class="main-panel">
+					<nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+							<div class="container-fluid">
+								<button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="navbar-toggler-icon icon-bar"></span>
+								<span class="navbar-toggler-icon icon-bar"></span>
+								<span class="navbar-toggler-icon icon-bar"></span>
+								</button>
+								<div class="collapse navbar-collapse justify-content-end">
+									<ul class="navbar-nav">
+										<% include admheader %>
+									</ul>
+								</div>
+							</div>
+					</nav>
+					<div class="content">
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-md-12">
+									<h2>Редактирование пользователя</h2>
+								</div>
+								<div class="col-md-12">
+									<div class="card">
+										<div class="card-body">
+											<form name="formUser">
+												<div class="form-group">
+													<button type="button" class="btn btn-primary" id="btnSaveUser" name="btnSaveUser" value="SaveUserClick">Сохранить</button>
+													<p id="txResultMsg"></p>
+												</div>
+												<!-- <%= userData[0].ID %> -->
+												<% userData.forEach(function(userRow) { %>
+													<div>
+														<p hidden><label>ID: </label> <span id="userID" data-value="<%= userRow.ID %>"><%= userRow.ID %></span></p>
+														<div class="form-group">
+															<label for="userLogin">Логин:</label>
+															<input type="text" class="form-control" id="userLogin" value="<%= userRow.Login %>" placeholder="логин" />
+														</div>
+														<div class="form-group">
+															<label for="userLogin">Пароль:</label>
+															<input type="password" class="form-control" id="userPwd" value="<%= userRow.Pwd %>" placeholder="пароль" />
+														</div>
+														<div class="form-group">
+															<label for="userEmail">Email:</label>
+															<input type="text" class="form-control" id="userEmail" value="<%= userRow.Email %>" placeholder="email" />
+														</div>
+														<div class="form-group">
+															<label for="rolesList">Роль:</label>
+															<span id="userRoleID" data-value="<%= userRow.IDRole %>" hidden><%= userRow.IDRole %></span>
+															<select name="rolesList" id="rolesList" class="form-control">
+																<option value="<%= userRow.IDRole %>" selected><%= userRow.RoleName %></option>
+																<% roles.forEach(function(roleRow) { %>
+																	<% if (roleRow.ID != roleRow.IDRole ){ %>
+																	<option value="<%= roleRow.ID %>"><%= roleRow.Name %></option>
+																	<% } %>
+																<% }); %>
+															</select>
+														</div>
+														<div class="form-group">
+															<% if (userRow.isLock) { %>
+																<input type="checkbox" id="userIsLock" checked>Блокировка</input>
+															<% } else { %>
+																<input type="checkbox" id="userIsLock">Блокировка</input>
+															<% } %>
+														</div>
+													</div>
+												<% }); %>
+											</form>
+										</div>
+									</div>
+									<div id="myModalBox" class="modal fade">
+												  <div class="modal-dialog">
+												    <div class="modal-content">
+												      <!-- Заголовок модального окна -->
+												      <div class="modal-header">
+												      	<h4 class="modal-title">Подтверждение действия</h4>
+												        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+												      </div>
+												      <!-- Основное содержимое модального окна -->
+												      <div class="modal-body">
+												        Обновить пользовательские данные?
+												      </div>
+												      <!-- Футер модального окна -->
+												      <div class="modal-footer">
+												        <button type="button" class="btn btn-success" id="updateExecute">Да</button>
+												        <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
+												      </div>
+												    </div>
+												  </div>
+												</div>
+								</div>
+								<script>
+										$(document).ready(function(){
+											GetRoleList();
+											$("#btnSaveUser").on('click', function(){
+												$("#myModalBox").modal('show');
+											});
+										});
+
+										function GetRoleList(){
+											$.ajax({
+												url: '/admin/rolesJson',
+												type: "GET",
+												success: function(result){
+													$('select#rolesList').empty();
+													var nUsrIDRole = $("#userRoleID").data("value");
+													$.each(result, function(index) {
+														if (result[index].ID == nUsrIDRole) {
+															$('select#rolesList').append(
+																	$('<option selected></option>')
+																	.val(result[index].ID)
+																	.html(result[index].Name)
+															);
+														}
+														else {
+															$('select#rolesList').append(
+																	$('<option></option>')
+																	.val(result[index].ID)
+																	.html(result[index].Name)
+															);
+														}
+													});
+												}
+											});
+										};
+
+
+										$("#updateExecute").on('click', function(){
+											var nUserID = $("#userID").data("value");
+											//console.log("btnSaveUser click: nUserID="+nUserID);
+											var sURL = "/admin/user/"+nUserID;
+											var sIsLock = "false";
+											if ($("input[id='userIsLock']:checked").val() === "undefined") {
+												sIsLock = "false";
+											}
+											else
+											if (($("input[id='userIsLock']:checked").val() == "true")
+												|| ($("input[id='userIsLock']:checked").val() == "on")) {
+												sIsLock = "true";
+											}
+											else {sIsLock = "false";}
+
+											$.ajax({
+												url: sURL,
+												type: "POST",
+												data: {
+													postOperation: 'upd',
+													userID: $("#userID").val(),
+													userLogin: $("#userLogin").val(),
+													userPwd: $("#userPwd").val(),
+													userEmail: $("#userEmail").val(),
+													roleID: $("select#rolesList").val(),
+													userIsLock: sIsLock
+												},
+												success: function(result){
+													console.log("POST upd /admin/user/id success: result="+result);
+													$("#txResultMsg").html(result);
+													ClearMsg("#txResultMsg");
+													//TODO: refresh page
+												},
+												error: function(err){
+													console.log("POST /admin/user/id error:");
+													console.log(err);
+												}
+											});
+											$("#myModalBox").modal('hide');
+										});
+								</script>
+							</div>
+						</div>
+					</div>
+				</div>
+			<% } else{ %>
+				<% include admloginform %>
+			<% } %>
+		</div>
+	</body>
+</html>

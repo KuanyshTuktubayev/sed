@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<% include head_html %>
+	</head>
+	<body>
+		<div class="wrapper">
+			<% if(adminLogin){ %>
+				<div class="sidebar" data-color="purple" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
+					<% include admmnu %>
+				</div>
+				<div id="workArea" class="main-panel">
+					<nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+							<div class="container-fluid">
+								<button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="navbar-toggler-icon icon-bar"></span>
+								<span class="navbar-toggler-icon icon-bar"></span>
+								<span class="navbar-toggler-icon icon-bar"></span>
+								</button>
+								<div class="collapse navbar-collapse justify-content-end">
+									<ul class="navbar-nav">
+										<% include admheader %>
+									</ul>
+								</div>
+							</div>
+					</nav>
+					<div class="content">
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-md-12">
+									<h2>Пользователи</h2>
+								</div>
+								<div class="col-md-12">
+									<button id="btnCreateUser" class="btn btn-primary btn-create-event" value='NewUser' type="button">Новый</button>
+									<p id="resultCreateMsg"></p>
+								</div>
+								<div class="col-md-12">
+									<div class="card">
+										<div class="card-body">
+											<div class="table-responsive">
+												<table class="table trans">
+													<thead class="text-primary">
+														<th>Логин</th>
+														<th>Роль</th>
+														<th>email</th>
+														<th>Статус</th>
+													</thead>
+													<tbody>
+														<% usersList.forEach(function(userRow) { %>
+															<tr>
+																<td><a href="/admin/user/<%= userRow.ID %>"><%= userRow.Login %></a></td>
+																<td><%= userRow.RoleName %></td>
+																<td><%= userRow.Email %></td>
+																<td>
+																	<% if (userRow.isLock) { %>
+																		<span>Заблокирован</span>
+																	<% } else { %>
+																		<span>Активный</span>
+																	<% } %>
+																</td>
+															</tr>
+														<% }); %>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<script>
+					$("#btnCreateUser").click(function(){
+						console.log("btnCreateUser click");
+						$("#resultCreateMsg").html('Создание нового пользователя...');
+						$.ajax({
+							url: "/admin/users/",
+							type: "POST",
+							data: {
+								postOperation: "ins"
+							},
+							success: function(result){
+								console.log("POST /admin/users/ success");
+								console.log("result.ID="+result.ID+", ResultMsg="+result.ResultMsg);
+								console.log(result);
+								if(result.ID > 0){
+									window.location.replace("/admin/user/"+result.ID);
+								}
+								else {
+									$("#resultCreateMsg").html('При создании нового пользователя не удалось определить ему ID');
+									ClearMsg("#resultCreateMsg");
+								}
+							},
+							error: function(err){
+								console.log("btnCreateUser POST /admin/users/ error:");
+								console.log(err);
+								$("#resultCreateMsg").html('При создании нового пользователя возникла ошибка: '+err);
+							}
+						});
+					});
+					function ClearMsg(msgElement){
+						window.setTimeout( function(){
+							$(msgElement).html("");
+						}, 5000 );
+					}
+				</script>
+			<% } else{ %>
+				<% include admloginform %>
+			<% } %>
+		</div>
+	</body>
+</html>
