@@ -28,7 +28,7 @@
 					<div id="workArea" class="content">
 						<div class="container-fluid">
 							<div class="col-md-12">
-								<h2>Создание задачи</h2>
+								<h2>Создание задания</h2>
 								<!-- ТЕСТ -->
 								<div style="display: none;">test</div>
 								<!-- ТЕСТ -->
@@ -37,27 +37,81 @@
 								<div class="card">
 									<div class="card-body">
 										<form name="formTask">
-												<div class="col-md-3">
-													<div class="form-group">
-														<label for="tasktypesList">Тип задач:</label>
-														<select name="tasktypesList" id="tasktypesList" class="form-control">
-															<% if (tasktypes) { %>
-																<% tasktypes.forEach(function(tasktypeRow) { %>
-																	<% if ( tasktypeRow.ID == 1) { %>
-																		<option value="<%= tasktypeRow.ID %>" selected><%= tasktypeRow.Name %> (ID: <%= tasktypeRow.ID %>)</option>
-																	<% } else { %>
-																		<option value="<%= tasktypeRow.ID %>"><%= tasktypeRow.Name %> (ID: <%= tasktypeRow.ID %>)</option>
-																	<% } %>
-																<% }); %>
-															<% } %>
-														</select>
-													</div>
+											<div class="col-md-3">
+
+												<div class="form-group">
+													<label for="taskTypesList">Тип задач:</label>
+													<select name="taskTypesList" id="taskTypesList" class="form-control">
+														<% if (taskTypes) { %>
+															<% taskTypes.forEach(function(taskTypeRow) { %>
+																<% if ( taskTypeRow.ID == 1) { %>
+																	<option value="<%= taskTypeRow.ID %>" selected><%= taskTypeRow.Name %></option>
+																<% } else { %>
+																	<option value="<%= taskTypeRow.ID %>"><%= taskTypeRow.Name %></option>
+																<% } %>
+															<% }); %>
+														<% } %>
+													</select>
 												</div>
-												<div class="row">
-													<div class="col-6">
-														<button class="btn btn-success" id="btnSaveEvent" type="button">Создать</button>
-													</div>
+
+												<div class="form-group">
+													<label for="controlTypesList">Тип контроля:</label>
+													<select name="controlTypesList" id="controlTypesList" class="form-control">
+														<% if (controlTypes) { %>
+															<% controlTypes.forEach(function(controlTypeRow) { %>
+																<% if ( controlTypeRow.ID == 1) { %>
+																	<option value="<%= controlTypeRow.ID %>" selected><%= controlTypeRow.Name %></option>
+																<% } else { %>
+																	<option value="<%= controlTypeRow.ID %>"><%= controlTypeRow.Name %></option>
+																<% } %>
+															<% }); %>
+														<% } %>
+													</select>
 												</div>
+
+												<div class="form-group">
+													<label for="docTypesList">Вид документа:</label>
+													<select name="docTypesList" id="docTypesList" class="form-control">
+														<% if (docTypes) { %>
+															<% docTypes.forEach(function(docTypeRow) { %>
+																<% if ( docTypeRow.ID == 1) { %>
+																	<option value="<%= docTypeRow.ID %>" selected><%= docTypeRow.Name %></option>
+																<% } else { %>
+																	<option value="<%= docTypeRow.ID %>"><%= docTypeRow.Name %></option>
+																<% } %>
+															<% }); %>
+														<% } %>
+													</select>
+												</div>
+
+												<div class="form-group">
+													<label for="docDate">Дата документа:</label>
+													<input type="datetime-local" class="form-control" id="docDate" value="<%= new Date().toJSON().slice(0,16) %>" />
+												</div>
+
+												<div class="form-group">
+													<label for="docInNum">Входящий номер:</label>
+													<input type="text" class="form-control" id="docInNum" placeholder="вх ном" />
+												</div>
+
+												<div class="form-group">
+													<label for="docOutNum">Исходящий номер:</label>
+													<input type="text" class="form-control" id="docOutNum" placeholder="исх ном" />
+												</div>
+
+												<div class="form-group">
+													<label for="docTel">Тел:</label>
+													<input type="text" class="form-control" id="docTel" placeholder="тел" />
+												</div>
+
+											</div>
+
+											<div class="row">
+												<div class="col-6">
+													<button class="btn btn-success" id="btnSaveTask" type="button">Создать</button>
+												</div>
+											</div>
+
 										</form>
 									</div>
 								</div>
@@ -70,23 +124,23 @@
 					$(document).ready(function(){
 						//GetTaskTypeList();
 					});
-					function GetTaskTypeList(){
+					/*function GetTaskTypeList(){
 						$.ajax({
 							url: '/admin/tasktypesJson',
 							type: "GET",
 							success: function(result){
-								$('select#tasktypesList').empty();
-								var nTskIDTaskType = $("#taskIDTasktype").data("value");
+								$('select#taskTypesList').empty();
+								var nTskIDTaskType = $("#taskIDTasktype").data("value"); //???
 								$.each(result, function(index) {
 									if (result[index].ID == nTskIDTaskType) {
-										$('select#tasktypesList').append(
+										$('select#taskTypesList').append(
 											$('<option selected></option>')
 												.val(result[index].ID)
 												.html(result[index].Name)
 										);
 									}
 									else {
-										$('select#tasktypesList').append(
+										$('select#taskTypesList').append(
 												$('<option></option>')
 												.val(result[index].ID)
 												.html(result[index].Name)
@@ -95,11 +149,11 @@
 								});
 							}
 						});
-					};
+					};*/
 					$("#btnSaveTask").on('click', function(){
-						console.log("new task click event");
+						console.log("new task click");
 						var nTaskID = 0;
-						nTaskID = $("#taskID").data("value");
+						nTaskID = $("#taskID").data("value"); //???
 						var sURL = "/admin/tasks/new";
 						$('[data-preloader]').removeClass('hidden');
  						$('html').css('overflow', 'hidden');
@@ -109,8 +163,14 @@
 						 	// timeout: 0,
 						 	async: true,
 							data: {
-								tasktypeID: $("select#tasktypesList").val(),
-								statusID: 1
+								taskTypeID: $("select#taskTypesList").val(),
+								statusID: 1,
+								controlTypeID: $("select#controlTypesList").val(),
+								docTypeID: $("select#docTypesList").val(),
+								docDate: $("#docDate").val(),
+								docInNum: $("#docInNum").val(),
+								docOutNum: $("#docOutNum").val(),
+								docTel: $("#docTel").val()
 							},
 							success: function(result){
 								console.log("POST create /admin/tasks/new success: result="+result);
@@ -126,24 +186,26 @@
 						});
 					});
 					$('#rowsTable').on('click', '.clickable-row', function(task) {
+						//???
 					  if($(this).hasClass('active')){
 							$(this).removeClass('active');
 					  } else {
 							$(this).addClass('active').siblings().removeClass('active');
 					  }
 					});
-					/*function readURL(input) {
-					    if (input.files && input.files[0]) {
-					        var reader = new FileReader();
-					        reader.onload = function (e) {
-					            $('#eventImage').attr('src', e.target.result);
-					        };
-					        reader.readAsDataURL(input.files[0]);
-					    }
-					}*/
+					function readURL(input) {
+						//TODO: make import pdf
+				    if (input.files && input.files[0]) {
+			        var reader = new FileReader();
+			        reader.onload = function (e) {
+		            $('#taskImage').attr('src', e.target.result);
+			        };
+			        reader.readAsDataURL(input.files[0]);
+				    }
+					}
 					function GetActualTaskStatus(){
 						console.log('GetActualTaskStatus::');
-						var nTaskID = $("#taskID").data("value");
+						var nTaskID = $("#taskID").data("value"); //???
 						$.ajax({
 							url: "/admin/taskGetStatus/"+nTaskID,
 							type: "GET",
@@ -159,13 +221,14 @@
 							}
 						});
 					}
-					/*function ClickNewImg(){
-						$("input[id='eventImageFile']").click();
-					};*/
+					function ClickNewImg(){
+						//TODO: make import pdf
+						$("input[id='taskImageFile']").click(); //???
+					};
 					function ClearMsg(msgElement){
 						window.setTimeout( function(){
 							$(msgElement).html("");
-						}, 5000 );
+						}, 10000 );
 					}
 				</script>
 			<% } else { %>

@@ -26,8 +26,9 @@ class RoleUtils extends rootUtils{
 		this.conOptions = conOptions;
 	}
 	getNameID(next){
+		console.log("RoleUtils.getNameID");
 		var sSQL = 'SELECT r."ID", r."Name" from public."tRole" r ';
-		console.log(sSQL);
+		//console.log(sSQL);
 		this.execute(sSQL, (roles) => {
 			next(roles);
 		})

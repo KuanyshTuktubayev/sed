@@ -7,50 +7,55 @@ class UserUtils extends rootUtils {
 		this.conOptions = conOptions;
 	}
 	getAll(next) {
+		console.log("UserUtils.getAll");
 		var sSQL = `SELECT u."ID", u."Login", u."Pwd", u."IDRole", u."isLock", u."Email", r."Name" as "RoleName"
 								FROM public."tUser" u
 								join public."tRole" r on r."ID" = u."IDRole"
 								where 1=1
 								order by u."isLock", u."ID"
 								`;
-		console.log(sSQL);
+		//console.log(sSQL);
 		this.execute(sSQL, (users) => {
 			next(users);
 		})
 	}
 	getByID(nID, next) {
+		console.log("UserUtils.getByID");
 		var sSQL = `SELECT u."ID", u."Login", u."Pwd", u."IDRole", u."isLock", u."Email", r."Name" as "RoleName"
 								FROM public."tUser" u
 								join public."tRole" r on r."ID" = u."IDRole"
 								where u."ID" = ${nID}
 								`;
-		console.log(sSQL);
+		//console.log(sSQL);
 		this.execute(sSQL, (users) => {
 			next(users);
 		})
 	}
 	getByLogin(clientData, next) {
+		console.log("UserUtils.getByLogin");
 		const client = new this.Client(this.conOptions);
 		client.connect()
 		var sSQL = `SELECT "ID", "Login", "Pwd", "IDRole" FROM public."tUser" where "isLock" = false and "IDRole" = 1 and "Login" = '${clientData.login}'`;
-		console.log(sSQL);
+		//console.log(sSQL);
 		client.query(sSQL, (qerr, qres) => {
 			client.end();
 			next(qerr, qres);
 		})
 	}
 	login(userData, next) {
+		console.log("UserUtils.login");
 		let sSQL = `SELECT u."ID", u."Login", u."Pwd", u."IDRole"
 								FROM public."tUser" u
 								WHERE u."isLock" = false
 								AND u."Login" = '${userData.login}'
 								`;
-		console.log(sSQL);
+		//console.log(sSQL);
 		this.execute(sSQL, (data) => {
 			next(data[0]);
 		})
 	}
 	insert(UserData, postOperation, next) {
+		console.log("UserUtils.insert");
 		const client = new this.Client(this.conOptions);
 		var users = {};
 		client.connect()
@@ -64,7 +69,7 @@ class UserUtils extends rootUtils {
 							${UserData.isLock},
 							'${UserData.email}')
 							RETURNING "ID"`;
-			console.log(sSQL);
+			//console.log(sSQL);
 			client.query(sSQL, (qerr, qres) => {
 				var newUserID = 0;
 				var sResultMsg = "";
@@ -85,6 +90,7 @@ class UserUtils extends rootUtils {
 		}
 	}
 	updateStatus(userData, next){
+		console.log("UserUtils.updateStatus");
 		const client = new this.Client(this.conOptions);
 		client.connect();
 		var sSQL = "";
@@ -93,14 +99,14 @@ class UserUtils extends rootUtils {
 			sSQL = `update public."tUser" set "isLock"=false where "ID" = ${userData.nID}`;
 		} else {
 			sSQL = `update public."tUser" set
-					"Login"='${userData.sLogin}',
-					"Pwd"='${userData.sPwd}',
-					"IDRole"=${userData.nIDRole},
-					"isLock"=${userData.bIsLock},
-					"Email" = '${userData.sEmail}'
-					where "ID" = ${userData.nID}`;
+								"Login"='${userData.sLogin}',
+								"Pwd"='${userData.sPwd}',
+								"IDRole"=${userData.nIDRole},
+								"isLock"=${userData.bIsLock},
+								"Email" = '${userData.sEmail}'
+							where "ID" = ${userData.nID}`;
 		}
-		console.log(sSQL);
+		//console.log(sSQL);
 		client.query(sSQL, (qerr, qres) => {
 			var sResMsg = "";
 			if (userData.sPostOperation == "del") {
@@ -118,7 +124,7 @@ class UserUtils extends rootUtils {
 			next(sResMsg);
 		});
 	}
-	cashierLogin(login, next){
+	/*cashierLogin(login, next){
 		let sSQL = `SELECT "ID", "Login", "Pwd", "IDRole"
 								FROM public."tUser"
 								WHERE "isLock" = false and "IDRole" in (2,3,4,6)
@@ -128,7 +134,7 @@ class UserUtils extends rootUtils {
 		this.execute(sSQL, (data) => {
 			next(data);
 		})
-	}
+	}*/
 }
 
 module.exports = UserUtils;

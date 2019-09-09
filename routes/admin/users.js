@@ -45,7 +45,7 @@ module.exports = (router, dbUtils, sAdminPageTitle) => {
 
 	//если зашли на адрес "localhost:3000/admin/user/123" где 123 это идентификатор пользователя
 	router.get('/user/:id', function(req, res, next) {
-		console.log("GET /user/id");
+		console.log("GET /admin/user/id");
 		var sAdminLogin = "";
 		var sessData = req.session;
 		if(sessData.admControl){

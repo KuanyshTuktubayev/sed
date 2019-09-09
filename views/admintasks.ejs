@@ -31,7 +31,7 @@
 					<div id="workArea" class="content">
 						<div class="container-fluid">
 							<div class="col-md-12">
-								<h2>Мероприятия</h2>
+								<h2>Задания</h2>
 							</div>
 							<% if(archive == false ){ %>
 								<div class="col-md-12">
@@ -47,12 +47,20 @@
 												<table class="table trans">
 													<thead class="text-primary">
 														<th scope="col">ID</th>
-														<th scope="col">Название</th>
-														<th scope="col">Дата и время</th>
+														<th scope="col">Тип задачи</th>
 														<th scope="col">Статус</th>
+														<th scope="col">Тип контроля</th>
+														<th scope="col">Вид документа</th>
+														<th scope="col">Статус документа</th>
+														<th scope="col">Дата документа</th>
+														<th scope="col">Вх номер</th>
+														<th scope="col">Исх номер</th>
+														<th scope="col">Тел</th>
+														<!--
 														<% if(archive == false ){ %>
 															<th scope="col">Функции</th>
 														<% } %>
+														-->
 													</thead>
 													<tbody>
 														<% tasksList.forEach(function(taskRow) { %>
@@ -61,14 +69,33 @@
 																	<a href="/admin/task/<%= taskRow.ID %>"><span id="taskID<%= taskRow.ID %>"><%= taskRow.ID %></span></a>
 																</td>
 																<td>
-																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.Name %></a>
-																</td>
-																<td>
-																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.DateFrom %></a>
+																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.TaskTypeName %></a>
 																</td>
 																<td>
 																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.StatusName %></a>
 																</td>
+																<td>
+																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.ControlTypeName %></a>
+																</td>
+																<td>
+																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.DocTypeName %></a>
+																</td>
+																<td>
+																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.DocStatusName %></a>
+																</td>
+																<td>
+																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.DocDate %></a>
+																</td>
+																<td>
+																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.InNum %></a>
+																</td>
+																<td>
+																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.OutNum %></a>
+																</td>
+																<td>
+																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.Tel %></a>
+																</td>
+																<!--
 																<% if(archive == false ){ %>
 																	<td scope="row">
 																		<div class="row justify-content-left">
@@ -78,6 +105,7 @@
 																		</div>
 																	</td>
 																<% } %>
+																-->
 															</tr>
 														<% }); %>
 													</tbody>

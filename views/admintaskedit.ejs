@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<% include head_html %>
+	</head>
+	<body>
+		<div class="wrapper">
+			<% if(adminLogin){ %>
+				<div class="sidebar" data-color="purple" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
+					<% include admmnu %>
+				</div>
+				<div id="workArea" class="main-panel">
+					<nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+						<div class="container-fluid">
+							<button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="navbar-toggler-icon icon-bar"></span>
+							<span class="navbar-toggler-icon icon-bar"></span>
+							<span class="navbar-toggler-icon icon-bar"></span>
+							</button>
+							<div class="collapse navbar-collapse justify-content-end">
+								<ul class="navbar-nav">
+									<% include admheader %>
+								</ul>
+							</div>
+						</div>
+					</nav>
+					<div id="workArea" class="content">
+						<div class="container-fluid">
+							<div class="col-md-12">
+								<h2>Редактирование задания</h2>
+								<!-- ТЕСТ -->
+								<div style="display: none;">test</div>
+								<!-- ТЕСТ -->
+							</div>
+							<div class="col-md-12">
+								<div class="card">
+									<div class="card-body">
+										<form name="formTask">
+											<% taskData.forEach(function(taskRow) { %>
+												<div class="col-md-5">
+													<p><label>ID: </label> <span id="taskID" data-value="<%= taskRow.ID %>"><%= taskRow.ID %></span></p>
+													<p><label>IDDoc: </label> <span id="docID" data-value="<%= taskRow.IDDoc %>"><%= taskRow.IDDoc %></span></p>
+													<div class="form-group">
+														<label for="taskDocInNum">Входящий номер документа:</label>
+														<input type="text" class="form-control" id="taskDocInNum" value="<%= taskRow.DocInNum %>" placeholder="Входящий номер документа" />
+													</div>
+													<div class="form-group">
+														<label for="taskDocOutNum">Исходящий номер документа:</label>
+														<input type="text" class="form-control" id="taskDocOutNum" value="<%= taskRow.DocOutNum %>" placeholder="Исходящий номер документа" />
+													</div>
+													<div class="form-group">
+														<label for="taskDocTel">Тел:</label>
+														<input type="text" class="form-control" id="taskDocTel" value="<%= taskRow.DocTel %>" placeholder="Тел" />
+													</div>
+													<div class="form-group">
+														<label for="taskDocShortContent">Краткое содержание:</label>
+														<input type="text" class="form-control" id="taskDocShortContent" value="<%= taskRow.DocShortContent %>" placeholder="Краткое содержание" />
+													</div>
+													<div class="form-group">
+														<label for="taskDocDate">Дата документа:</label>
+														<!--<input type="datetime-local" /> -->
+														<input type="date" class="form-control" id="taskDocDate" value="<%= taskRow.DocDate %>" placeholder="дата документа" />
+													</div>
+													<div class="form-group">
+														<label for="docTypesList">Вид документа:</label>
+														<span id="taskIDDocType" data-value="<%= taskRow.IDDocType %>" hidden><%= taskRow.IDDocType %></span>
+														<select name="docTypesList" id="docTypesList" class="form-control">
+															<option value="<%= taskRow.IDDocType %>" selected><%= taskRow.DocTypeName %></option>
+															<% docTypes.forEach(function(docTypeRow) { %>
+																<% if (docTypeRow.ID != taskRow.IDDocType ){ %>
+																	<option value="<%= docTypeRow.ID %>"><%= docTypeRow.Name %></option>
+																<% } %>
+															<% }); %>
+														</select>
+													</div>
+													<div class="form-group">
+														<label for="controlTypesList">Вид контроля:</label>
+														<span id="taskIDControlType" data-value="<%= taskRow.IDTaskType %>" hidden><%= taskRow.IDControlType %></span>
+														<select name="controlTypesList" id="controlTypesList" class="form-control">
+															<option value="<%= taskRow.IDControlType %>" selected><%= taskRow.ControlTypeName %></option>
+															<% controlTypes.forEach(function(controlTypeRow) { %>
+																<% if (controlTypeRow.ID != taskRow.IDControlType ){ %>
+																	<option value="<%= controlTypeRow.ID %>"><%= controlTypeRow.Name %></option>
+																<% } %>
+															<% }); %>
+														</select>
+													</div>
+													<div class="form-group">
+														<label for="taskTypesList">Тип задачи:</label>
+														<span id="taskIDTaskType" data-value="<%= taskRow.IDTaskType %>" hidden><%= taskRow.IDTaskType %></span>
+														<select name="taskTypesList" id="taskTypesList" class="form-control">
+															<option value="<%= taskRow.IDTaskType %>" selected><%= taskRow.TaskTypeName %></option>
+															<% taskTypes.forEach(function(taskTypeRow) { %>
+																<% if (taskTypeRow.ID != taskRow.IDTaskType ){ %>
+																	<option value="<%= taskTypeRow.ID %>"><%= taskTypeRow.Name %></option>
+																<% } %>
+															<% }); %>
+														</select>
+													</div>
+												</div>
+											<% }); %>
+										</form>
+									</div>
+								</div>
+							</div>
+							<div class="form-group footer-buttons">
+								<button type="button" class="btn btn-primary" id="btnCancelEditTask" name="btnCancelEditTask" value="CancelEditTaskClick">Отменить</button>
+								<button type="button" class="btn btn-primary" id="btnSaveTask" name="btnSaveTask" value="SaveTaskClick">Сохранить</button>
+								<p id="txResultMsg"></p>
+								<!-- HTML-код модального окна -->
+								<div id="myModalBox" class="modal fade">
+								  <div class="modal-dialog">
+								    <div class="modal-content">
+								      <!-- Заголовок модального окна -->
+								      <div class="modal-header">
+								      	<h4 class="modal-title">Подтверждение действия</h4>
+								        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+								      </div>
+								      <!-- Основное содержимое модального окна -->
+								      <div class="modal-body">
+								        Выйти без сохранения изменений?
+								      </div>
+								      <!-- Футер модального окна -->
+								      <div class="modal-footer">
+								        <button type="button" class="btn btn-danger" id="cancelExecute">Да</button>
+								        <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
+								      </div>
+								    </div>
+								  </div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<script>
+					$(document).ready(function(){
+						GetTaskTypeList();
+						GetControlTypeList();
+						GetDocTypeList();
+					});
+					function GetTaskTypeList(){
+						$.ajax({
+							url: '/admin/tasktypesJson',
+							type: "GET",
+							success: function(result){
+								$('select#taskTypesList').empty();
+								var nTskIDTaskType = $("#taskIDTaskType").data("value");
+								$.each(result, function(index) {
+									if (result[index].ID == nTskIDTaskType) {
+										$('select#taskTypesList').append(
+											$('<option selected></option>')
+												.val(result[index].ID)
+												.html(result[index].Name)
+										);
+									}
+									else {
+										$('select#taskTypesList').append(
+												$('<option></option>')
+												.val(result[index].ID)
+												.html(result[index].Name)
+										);
+									}
+								});
+							}
+						});
+					};
+					function GetControlTypeList(){
+						$.ajax({
+							url: '/admin/controltypesJson',
+							type: "GET",
+							success: function(result){
+								$('select#controlTypesList').empty();
+								var nTskIDControlType = $("#taskIDControlType").data("value");
+								$.each(result, function(index) {
+									if (result[index].ID == nTskIDControlType) {
+										$('select#controlTypesList').append(
+											$('<option selected></option>')
+												.val(result[index].ID)
+												.html(result[index].Name)
+										);
+									}
+									else {
+										$('select#controlTypesList').append(
+												$('<option></option>')
+												.val(result[index].ID)
+												.html(result[index].Name)
+										);
+									}
+								});
+							}
+						});
+					};
+					function GetDocTypeList(){
+						$.ajax({
+							url: '/admin/doctypesJson',
+							type: "GET",
+							success: function(result){
+								$('select#docTypesList').empty();
+								var nTskIDDocType = $("#taskIDDocType").data("value");
+								$.each(result, function(index) {
+									if (result[index].ID == nTskIDDocType) {
+										$('select#docTypesList').append(
+											$('<option selected></option>')
+												.val(result[index].ID)
+												.html(result[index].Name)
+										);
+									}
+									else {
+										$('select#docTypesList').append(
+												$('<option></option>')
+												.val(result[index].ID)
+												.html(result[index].Name)
+										);
+									}
+								});
+							}
+						});
+					};
+					$("#btnSaveTask").on('click', function(){
+						//console.log("btnSaveTask.click");
+						//console.log(new Date($("#taskDocDate").val()));
+						var nTaskID = 0;
+						nTaskID = $("#taskID").data("value");
+						var sURL = "/admin/task/"+nTaskID;
+						$.ajax({
+							url: sURL,
+							type: "POST",
+							data: {
+								postOperation: 'upd',
+								taskID: $("#taskID").data("value"),
+								docID: $("#docID").data("value"),
+								docInNum: $("#taskDocInNum").val(),
+								docOutNum: $("#taskDocOutNum").val(),
+								docTel: $("#taskDocTel").val(),
+								docDate: $("#taskDocDate").val(),
+								taskTypeID: $("select#taskTypesList").val(),
+								controlTypeID: $("select#controlTypesList").val(),
+								docTypeID: $("select#docTypesList").val()
+							},
+							success: function(result){
+								console.log("POST upd /admin/task/id success: result="+result);
+								$("#txResultMsg").html(result);
+								ClearMsg("#txResultMsg");
+								//TODO: refresh page
+							},
+							error: function(err){
+								console.log("POST /admin/task/id error:");
+								console.log(err);
+							}
+						});
+					});
+					$("#btnCancelEditTask").on('click', function(){
+						$("#myModalBox").modal('show');
+					});
+					$('#cancelExecute').on('click', function(){
+						document.location.href = "/admin/tasks";
+					})
+					$('#rowsTable').on('click', '.clickable-row', function(event) {
+					  //$(this).addClass('active').siblings().removeClass('active');
+					  if($(this).hasClass('active')){
+						$(this).removeClass('active');
+					  } else {
+						$(this).addClass('active').siblings().removeClass('active');
+					  }
+					});
+					function readURL(input) {
+					    if (input.files && input.files[0]) {
+					        var reader = new FileReader();
+					        reader.onload = function (e) {
+					            $('#taskImage').attr('src', e.target.result);
+					        };
+					        reader.readAsDataURL(input.files[0]);
+					    }
+					}
+					function GetActualTaskStatus(){
+						console.log('GetActualTaskStatus::');
+						var nTaskID = $("#taskID").data("value");
+						$.ajax({
+							url: "/admin/taskGetStatus/"+nTaskID,
+							type: "GET",
+							success: function(result){
+									console.log('GetActualTaskStatus success:');
+									console.log(result);
+									$("#taskIDStatus").attr('data-value', result[0].IDStatus);
+									$("#taskIDStatus").html(result[0].StatusName);
+								},
+							error: function(err){
+								console.log("GET GetActualTaskStatus /admin/taskGetStatus/id error:");
+								console.log(err);
+							}
+						});
+					}
+					function ClickNewImg(){
+						$("input[id='taskImageFile']").click();
+					};
+					function ClearMsg(msgElement){
+						window.setTimeout( function(){
+							$(msgElement).html("");
+						}, 5000 );
+					}
+				</script>
+			<% } else { %>
+				<% include admloginform %>
+			<% } %>
+		</div>
+	</body>
+</html>

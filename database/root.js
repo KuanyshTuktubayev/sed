@@ -1,5 +1,6 @@
 class rootUtils {
 	execute(sSQL, next) {
+		console.log("rootUtils.execute");
 		let result = {};
 		const client = new this.Client(this.conOptions);
 		client.connect();

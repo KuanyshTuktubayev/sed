@@ -5,7 +5,7 @@ module.exports = (router, dbUtils, sAdminPageTitle) => {
 		console.log("GET /admin");
 		sessData 	= req.session;
 		if(sessData.admControl){
-	  	res.redirect('/admin/users/');
+	  	res.redirect('/admin/tasks/');
     }
 		else {
 			res.redirect('/login');
