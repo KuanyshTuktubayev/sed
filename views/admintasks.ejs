@@ -2,24 +2,26 @@
 <html>
 	<head>
 		<% include head_html %>
+		<!--
 		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
 		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
 		<script src="/javascripts/filter.js"></script>
+		-->
 	</head>
 	<body>
 		<div class="wrapper">
 			<% if(adminLogin){ %>
-				<div class="sidebar" data-color="purple" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
+				<div class="sidebar">
 					<% include admmnu %>
 				</div>
-				<div id="workArea" class="main-panel">
+				<div id="workContainer" class="main-panel">
 					<nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
 						<div class="container-fluid">
 							<button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-							<span class="sr-only">Toggle navigation</span>
-							<span class="navbar-toggler-icon icon-bar"></span>
-							<span class="navbar-toggler-icon icon-bar"></span>
-							<span class="navbar-toggler-icon icon-bar"></span>
+								<span class="sr-only">Toggle navigation</span>
+								<span class="navbar-toggler-icon icon-bar"></span>
+								<span class="navbar-toggler-icon icon-bar"></span>
+								<span class="navbar-toggler-icon icon-bar"></span>
 							</button>
 							<div class="collapse navbar-collapse justify-content-end">
 								<ul class="navbar-nav">
@@ -44,8 +46,9 @@
 									<div class="card">
 										<div class="card-body">
 											<div class="table-responsive">
-												<table class="table trans">
+												<table class="table table-hover"> <!-- class="table trans" -->
 													<thead class="text-primary">
+														<th scope="col">.</th>
 														<th scope="col">ID</th>
 														<th scope="col">Тип задачи</th>
 														<th scope="col">Статус</th>
@@ -64,49 +67,213 @@
 													</thead>
 													<tbody>
 														<% tasksList.forEach(function(taskRow) { %>
-															<tr>
-																<td scope="row">
-																	<a href="/admin/task/<%= taskRow.ID %>"><span id="taskID<%= taskRow.ID %>"><%= taskRow.ID %></span></a>
-																</td>
-																<td>
-																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.TaskTypeName %></a>
-																</td>
-																<td>
-																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.StatusName %></a>
-																</td>
-																<td>
-																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.ControlTypeName %></a>
-																</td>
-																<td>
-																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.DocTypeName %></a>
-																</td>
-																<td>
-																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.DocStatusName %></a>
-																</td>
-																<td>
-																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.DocDate %></a>
-																</td>
-																<td>
-																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.InNum %></a>
-																</td>
-																<td>
-																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.OutNum %></a>
-																</td>
-																<td>
-																	<a href="/admin/task/<%= taskRow.ID %>"><%= taskRow.Tel %></a>
-																</td>
-																<!--
-																<% if(archive == false ){ %>
-																	<td scope="row">
-																		<div class="row justify-content-left">
-																			<div class="col-lg-4 col-6">
-																				<button class="btn btn-danger btn-sm btn-archive" data-href="/admin/task/archive/<%= taskRow.ID %>">В архив</button>
+																	<tr data-toggle="collapse" data-target="#Detail<%= taskRow.ID %>" class="clickable">
+																		<td scope="row">
+																			...
+																		</td>
+																		<td scope="row">
+																			<a href="/admin/task/<%= taskRow.ID %>"><span id="taskID<%= taskRow.ID %>"><%= taskRow.ID %></span></a>
+																		</td>
+																		<td>
+																			<%= taskRow.TaskTypeName %>
+																		</td>
+																		<td>
+																			<%= taskRow.StatusName %>
+																		</td>
+																		<td>
+																			<%= taskRow.ControlTypeName %>
+																		</td>
+																		<td>
+																			<%= taskRow.DocTypeName %>
+																		</td>
+																		<td>
+																			<%= taskRow.DocStatusName %>
+																		</td>
+																		<td>
+																			<%= taskRow.DocDate %>
+																		</td>
+																		<td>
+																			<%= taskRow.InNum %>
+																		</td>
+																		<td>
+																			<%= taskRow.OutNum %>
+																		</td>
+																		<td>
+																			<%= taskRow.Tel %>
+																		</td>
+																		<!--
+																		<% if(archive == false ){ %>
+																			<td scope="row">
+																				<div class="row justify-content-left">
+																					<div class="col-lg-4 col-6">
+																						<button class="btn btn-danger btn-sm btn-archive" data-href="/admin/task/archive/<%= taskRow.ID %>">В архив</button>
+																					</div>
+																				</div>
+																			</td>
+																		<% } %>
+																		-->
+																	</tr>
+																	<tr id="Detail<%= taskRow.ID %>" class="collapse">
+																		<td></td>
+																		<td colspan="10">
+																			<div class="container">
+																				<div name="divBtns_<%= taskRow.ID %>">
+																					<div class="btn-group">
+																						<button type="button" class="btn btn-info" id="btnResolution<%= taskRow.ID %>" onclick="onResolutionTaskByID(<%= taskRow.ID %>)">Резолюция</button>
+																					</div>
+																					<div class="btn-group">
+																						<button type="button" class="btn btn-info" id="btnDone<%= taskRow.ID %>" onclick="onDoneTaskByID(<%= taskRow.ID %>)">Исполнение</button>
+																					</div>
+																					<div class="btn-group">
+																						<div class="dropdown">
+																						  <button class="btn btn-info dropdown-toggle" type="button" id="btnCreateProject<%= taskRow.ID %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																						    Создать проект
+																						  </button>
+																						  <div class="dropdown-menu" aria-labelledby="btnCreateProject<%= taskRow.ID %>">
+																						    <button class="dropdown-item" type="button" onclick='addPrjMemoByTaskID(<%= taskRow.ID %>)'>Проект служебной записки</button>
+																						    <button class="dropdown-item" type="button" onclick='addPrjOutDocByTaskID(<%= taskRow.ID %>)'>Проект исходящего документа</button>
+																						  </div>
+																						</div>
+																					</div>
+																				</div>
+																				<div name="workArea_<%= taskRow.ID %>">
+																					<div id="tabs_Task<%= taskRow.ID %>">
+																						<div class="btn-group">
+																							<span>Документ</span>
+																						</div>
+																						<div class="btn-group">
+																							<span>Вложения</span>
+																						</div>
+																						<div class="btn-group">
+																							<span>Ход исполнения</span>
+																						</div>
+																					</div>
+																					<div id="docData_Task<%= taskRow.ID %>">
+																						<table class="table">
+																							<tr>
+																								<td>
+																									<table>
+																										<tr>
+																											<td>Тип контроля:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Входящий номер:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Корреспондент:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Телефон:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Исходящий номер:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Адресат:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Отв. исполнитель:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Вид документа:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Краткое содержание:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Лист./Прил./Другое:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Вид доставки:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Получен в ответ на:	</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>К документу:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Отправлены ответные*:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Дело:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Том:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Акты:</td>
+																											<td></td>
+																										</tr>
+																									</table>
+																								</td>
+																								<td>
+																									<table>
+																										<tr>
+																											<td>Срок исполнения:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>От:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Автор:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Email:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>От:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Характер вопроса:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Язык документа:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Отправлены промежуточные*:</td>
+																											<td></td>
+																										</tr>
+																										<tr>
+																											<td>Листы:</td>
+																											<td></td>
+																										</tr>
+																									</table>
+																								</td>
+																							</tr>
+																						</table>
+																					</div>
+																					<div id="files_Task<%= taskRow.ID %>" style="display: none;">
+																					</div>
+																					<div id="logs_Task<%= taskRow.ID %>" style="display: none;">
+																					</div>
+																				</div>
 																			</div>
-																		</div>
-																	</td>
-																<% } %>
-																-->
-															</tr>
+																		</td>
+																	</tr>
 														<% }); %>
 													</tbody>
 												</table>

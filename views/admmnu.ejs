@@ -1,19 +1,52 @@
-<div class="logo">
-	<a href="/admin" class="simple-text logo-normal">
-	  Навигация
-	</a>
-</div>
 <div class="sidebar-wrapper">
-	<ul class="nav">
-	  	<li class="nav-item">
-			<a class="nav-link" href="/admin/tasks">
-				<p>Задачи</p>
-			</a>
-	  	</li>
-		<li class="nav-item ">
-			<a class="nav-link" href="/admin/users">
-				<p>Пользователи</p>
-			</a>
-		</li>
-	</ul>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menuContent" aria-controls="menuContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+	  </button>
+		<div class="collapse navbar-collapse" id="menuContent">
+			<ul class="navbar-nav mr-auto">
+			  <li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="mnuTasks" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Задания
+					</a>
+					<div class="dropdown-menu" aria-labelledby="mnuTasks">
+						<a class="dropdown-item" href="/admin/tasks">Все</a>
+						<a class="dropdown-item" href="/admin/tasks">Новые</a>
+						<a class="dropdown-item" href="/admin/tasks">В работе</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/admin/tasks">Исполненные</a>
+					</div>
+			  </li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="mnuDocs" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Документы
+					</a>
+					<div class="dropdown-menu" aria-labelledby="mnuDocs">
+						<a class="dropdown-item" href="/admin/projects">Проекты</a>
+						<a class="dropdown-item" href="/admin/memos">Служебные записки</a>
+					</div>
+			  </li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="mnuArchives" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Архив
+					</a>
+					<div class="dropdown-menu" aria-labelledby="mnuArchives">
+						<a class="dropdown-item" href="/admin/acrh/2018">2018</a>
+						<a class="dropdown-item" href="/admin/acrh/2017">2017</a>
+						<a class="dropdown-item" href="/admin/acrh/2016">2016</a>
+					</div>
+			  </li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="mnuLists" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Справочники
+					</a>
+					<div class="dropdown-menu" aria-labelledby="mnuLists">
+						<a class="dropdown-item" href="/admin/users">Пользователи</a>
+						<a class="dropdown-item" href="/admin/xxxxx">xxxxx</a>
+						<a class="dropdown-item" href="/admin/xxxxx">xxxxx</a>
+					</div>
+			  </li>
+			</ul>
+		</div>
+	</nav>
 </div>
