@@ -7,284 +7,296 @@
 		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
 		<script src="/javascripts/filter.js"></script>
 		-->
+		<!--<script src="./../javascripts/splitter.js"></script>-->
 	</head>
-	<body>
-		<div class="wrapper">
+	<body> <!-- style="height: 100vh; overflow: auto;" -->
+		<div class="wrapper" style="height: 95vh; overflow: auto;">
 			<% if(adminLogin){ %>
-				<div class="sidebar">
-					<% include admmnu %>
-				</div>
-				<div id="workContainer" class="main-panel">
-					<nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
-						<div class="container-fluid">
-							<button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-								<span class="sr-only">Toggle navigation</span>
-								<span class="navbar-toggler-icon icon-bar"></span>
-								<span class="navbar-toggler-icon icon-bar"></span>
-								<span class="navbar-toggler-icon icon-bar"></span>
-							</button>
-							<div class="collapse navbar-collapse justify-content-end">
-								<ul class="navbar-nav">
-									<% include admheader %>
-								</ul>
-							</div>
+				<div class="sidebar fixed-top">
+					<div class="row justify-content-between">
+						<div class="col-auto mr-auto">
+							<% include admmnu %>
 						</div>
-					</nav>
-					<div id="workArea" class="content">
-						<div class="container-fluid">
-							<div class="col-md-12">
-								<h2>Задания</h2>
-							</div>
-							<% if(archive == false ){ %>
-								<div class="col-md-12">
-									<a class="btn btn-primary btn-create-event" href="/admin/tasks/new">Создать новое</a>
-									<p id="resultCreateMsg"></p>
-								</div>
-							<% } %>
-							<% if(tasksList) { %>
-								<div class="col-md-12">
-									<div class="card">
-										<div class="card-body">
-											<div class="table-responsive">
-												<table class="table table-hover"> <!-- class="table trans" -->
-													<thead class="text-primary">
-														<th scope="col">.</th>
-														<th scope="col">ID</th>
-														<th scope="col">Тип задачи</th>
-														<th scope="col">Статус</th>
-														<th scope="col">Тип контроля</th>
-														<th scope="col">Вид документа</th>
-														<th scope="col">Статус документа</th>
-														<th scope="col">Дата документа</th>
-														<th scope="col">Вх номер</th>
-														<th scope="col">Исх номер</th>
-														<th scope="col">Тел</th>
-														<!--
-														<% if(archive == false ){ %>
-															<th scope="col">Функции</th>
-														<% } %>
-														-->
-													</thead>
-													<tbody>
-														<% tasksList.forEach(function(taskRow) { %>
-																	<tr data-toggle="collapse" data-target="#Detail<%= taskRow.ID %>" class="clickable">
-																		<td scope="row">
-																			...
-																		</td>
-																		<td scope="row">
-																			<a href="/admin/task/<%= taskRow.ID %>"><span id="taskID<%= taskRow.ID %>"><%= taskRow.ID %></span></a>
-																		</td>
-																		<td>
-																			<%= taskRow.TaskTypeName %>
-																		</td>
-																		<td>
-																			<%= taskRow.StatusName %>
-																		</td>
-																		<td>
-																			<%= taskRow.ControlTypeName %>
-																		</td>
-																		<td>
-																			<%= taskRow.DocTypeName %>
-																		</td>
-																		<td>
-																			<%= taskRow.DocStatusName %>
-																		</td>
-																		<td>
-																			<%= taskRow.DocDate %>
-																		</td>
-																		<td>
-																			<%= taskRow.InNum %>
-																		</td>
-																		<td>
-																			<%= taskRow.OutNum %>
-																		</td>
-																		<td>
-																			<%= taskRow.Tel %>
-																		</td>
-																		<!--
-																		<% if(archive == false ){ %>
-																			<td scope="row">
-																				<div class="row justify-content-left">
-																					<div class="col-lg-4 col-6">
-																						<button class="btn btn-danger btn-sm btn-archive" data-href="/admin/task/archive/<%= taskRow.ID %>">В архив</button>
-																					</div>
-																				</div>
-																			</td>
-																		<% } %>
-																		-->
-																	</tr>
-																	<tr id="Detail<%= taskRow.ID %>" class="collapse">
-																		<td></td>
-																		<td colspan="10">
-																			<div class="container">
-																				<div name="divBtns_<%= taskRow.ID %>">
-																					<div class="btn-group">
-																						<button type="button" class="btn btn-info" id="btnResolution<%= taskRow.ID %>" onclick="onResolutionTaskByID(<%= taskRow.ID %>)">Резолюция</button>
-																					</div>
-																					<div class="btn-group">
-																						<button type="button" class="btn btn-info" id="btnDone<%= taskRow.ID %>" onclick="onDoneTaskByID(<%= taskRow.ID %>)">Исполнение</button>
-																					</div>
-																					<div class="btn-group">
-																						<div class="dropdown">
-																						  <button class="btn btn-info dropdown-toggle" type="button" id="btnCreateProject<%= taskRow.ID %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-																						    Создать проект
-																						  </button>
-																						  <div class="dropdown-menu" aria-labelledby="btnCreateProject<%= taskRow.ID %>">
-																						    <button class="dropdown-item" type="button" onclick='addPrjMemoByTaskID(<%= taskRow.ID %>)'>Проект служебной записки</button>
-																						    <button class="dropdown-item" type="button" onclick='addPrjOutDocByTaskID(<%= taskRow.ID %>)'>Проект исходящего документа</button>
-																						  </div>
-																						</div>
-																					</div>
-																				</div>
-																				<div name="workArea_<%= taskRow.ID %>">
-																					<div id="tabs_Task<%= taskRow.ID %>">
-																						<div class="btn-group">
-																							<span>Документ</span>
-																						</div>
-																						<div class="btn-group">
-																							<span>Вложения</span>
-																						</div>
-																						<div class="btn-group">
-																							<span>Ход исполнения</span>
-																						</div>
-																					</div>
-																					<div id="docData_Task<%= taskRow.ID %>">
-																						<table class="table">
-																							<tr>
-																								<td>
-																									<table>
-																										<tr>
-																											<td>Тип контроля:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Входящий номер:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Корреспондент:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Телефон:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Исходящий номер:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Адресат:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Отв. исполнитель:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Вид документа:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Краткое содержание:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Лист./Прил./Другое:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Вид доставки:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Получен в ответ на:	</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>К документу:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Отправлены ответные*:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Дело:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Том:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Акты:</td>
-																											<td></td>
-																										</tr>
-																									</table>
-																								</td>
-																								<td>
-																									<table>
-																										<tr>
-																											<td>Срок исполнения:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>От:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Автор:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Email:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>От:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Характер вопроса:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Язык документа:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Отправлены промежуточные*:</td>
-																											<td></td>
-																										</tr>
-																										<tr>
-																											<td>Листы:</td>
-																											<td></td>
-																										</tr>
-																									</table>
-																								</td>
-																							</tr>
-																						</table>
-																					</div>
-																					<div id="files_Task<%= taskRow.ID %>" style="display: none;">
-																					</div>
-																					<div id="logs_Task<%= taskRow.ID %>" style="display: none;">
-																					</div>
-																				</div>
-																			</div>
-																		</td>
-																	</tr>
-														<% }); %>
-													</tbody>
-												</table>
-											</div>
-										</div>
-									</div>
-								</div>
-							<% } %>
+						<div class="col-auto align-self-end">
+							<% include admheader %>
 						</div>
 					</div>
 				</div>
+				<div id="workArea" class="content">
+					<div class="container-fluid">
+						<div class="col-md-12">
+							<h2>Задания</h2>
+						</div>
+						<% if(archive == false ){ %>
+							<div class="col-md-12">
+								<a class="btn btn-primary btn-create-event" href="/admin/tasks/new">Создать новое</a>
+								<p id="resultCreateMsg"></p>
+							</div>
+						<% } %>
+						<div class="row">
+							<div id="divLeftVertMenu" class="col-md-2" style="height: 79vh; overflow: auto;">
+								<table class="table">
+									<thead class="bg-light">
+										<th class="btn clickable" data-toggle="collapse" data-target="#mnuLeft_Status"><strong>По статусу</strong></th>
+									</thead>
+									<tbody>
+										<tr class="display" id="mnuLeft_Status">
+											<td>
+												<ul class="nav flex-column nav-pills">
+													<li class="nav-item"><a class="nav-item nav-link active" href="#">Все</a></li>
+													<li class="nav-item"><a class="nav-item nav-link" href="#">В работе</a></li>
+													<li class="nav-item"><a class="nav-item nav-link" href="#">Исполненные</a></li>
+												</ul>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<table class="table">
+									<thead class="bg-light">
+										<th class="btn clickable" data-toggle="collapse" data-target="#mnuLeft_TaskType"><strong>По типу задания</strong></th>
+									</thead>
+									<tbody>
+										<tr class="display" id="mnuLeft_TaskType">
+											<td>
+												<ul class="nav flex-column nav-pills">
+													<li class="nav-item"><a class="nav-item nav-link active" href="#">Рассмотрение</a></li>
+													<li class="nav-item"><a class="nav-item nav-link" href="#">Резолюция</a></li>
+													<li class="nav-item"><a class="nav-item nav-link" href="#">Поручение</a></li>
+													<li class="nav-item"><a class="nav-item nav-link" href="#">Согласование</a></li>
+													<li class="nav-item"><a class="nav-item nav-link" href="#">На регистрацию</a></li>
+													<li class="nav-item"><a class="nav-item nav-link" href="#">На перевод</a></li>
+												</ul>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div id="divDataTable" class="col-md-10" style="height: 70vh; overflow: auto;">
+								<div class="overflow-auto">
+									<% if(tasksList) { %>
+										<table class="table table-hover"> <!-- table-hover -->
+											<thead class="bg-primary text-light">
+												<th scope="col">></th>
+												<th scope="col">ID</th>
+												<th scope="col">Дата документа</th>
+												<th scope="col">Тип задачи</th>
+												<th scope="col">Статус</th>
+												<th scope="col">Тип контроля</th>
+												<th scope="col">Вид документа</th>
+												<th scope="col">Статус документа</th>
+												<th scope="col">Вх номер</th>
+												<th scope="col">Исх номер</th>
+												<th scope="col">Тел</th>
+												<!--
+												<% if(archive == false ){ %>
+													<th scope="col">Функции</th>
+												<% } %>
+												-->
+											</thead>
+											<tbody>
+												<% tasksList.forEach(function(taskRow) { %>
+													<tr>
+														<th scope="row" data-toggle="collapse" data-target="#Detail<%= taskRow.ID %>" class="btn clickable">>></th>
+														<td scope="row" style="border: 1px dotted black;"><a href="/admin/task/<%= taskRow.ID %>"><span id="taskID<%= taskRow.ID %>"><%= taskRow.ID %></span></a></td>
+														<td style="border: 1px dotted black;"><%= taskRow.DocDate %></td>
+														<td style="border: 1px dotted black;"><%= taskRow.TaskTypeName %></td>
+														<td style="border: 1px dotted black;"><%= taskRow.StatusName %></td>
+														<td style="border: 1px dotted black;"><%= taskRow.ControlTypeName %></td>
+														<td style="border: 1px dotted black;"><%= taskRow.DocTypeName %></td>
+														<td style="border: 1px dotted black;"><%= taskRow.DocStatusName %></td>
+														<td style="border: 1px dotted black;"><%= taskRow.InNum %></td>
+														<td style="border: 1px dotted black;"><%= taskRow.OutNum %></td>
+														<td style="border: 1px dotted black;"><%= taskRow.Tel %></td>
+														<!--
+														<% if(archive == false ){ %>
+															<td scope="row">
+																<div class="row justify-content-left">
+																	<div class="col-lg-4 col-6">
+																		<button class="btn btn-danger btn-sm btn-archive" data-href="/admin/task/archive/<%= taskRow.ID %>">В архив</button>
+																	</div>
+																</div>
+															</td>
+														<% } %>
+														-->
+													</tr>
+													<tr class="collapse" id="Detail<%= taskRow.ID %>">
+														<td></td>
+														<td colspan="10" style="border: 1px dotted grey;">
+															<div class="container">
+																<div name="divBtns_<%= taskRow.ID %>">
+																	<div class="btn-group">
+																		<button type="button" class="btn btn-info" id="btnResolution<%= taskRow.ID %>" onclick="onResolutionTaskByID(<%= taskRow.ID %>)">Резолюция</button>
+																	</div>
+																	<div class="btn-group">
+																		<button type="button" class="btn btn-info" id="btnDone<%= taskRow.ID %>" onclick="onDoneTaskByID(<%= taskRow.ID %>)">Исполнение</button>
+																	</div>
+																	<div class="btn-group">
+																		<div class="dropdown">
+																		  <button class="btn btn-info dropdown-toggle" type="button" id="btnCreateProject<%= taskRow.ID %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																		    Создать проект
+																		  </button>
+																		  <div class="dropdown-menu" aria-labelledby="btnCreateProject<%= taskRow.ID %>">
+																		    <button class="dropdown-item" type="button" onclick='addPrjMemoByTaskID(<%= taskRow.ID %>)'>Проект служебной записки</button>
+																		    <button class="dropdown-item" type="button" onclick='addPrjOutDocByTaskID(<%= taskRow.ID %>)'>Проект исходящего документа</button>
+																		  </div>
+																		</div>
+																	</div>
+																</div>
+																<div id="tabs_Task<%= taskRow.ID %>">
+																	<ul class="nav nav-tabs" role="tablist">
+																	  <li id="mnutabDoc_Task<%= taskRow.ID %>" class="nav-item"><a class="nav-link active" data-toggle="tab" href="#tabDoc_Task<%= taskRow.ID %>" role="tab" aria-controls="tabDoc_Task<%= taskRow.ID %>" aria-selected="true">Документ</a></li>
+																	  <li id="mnutabFiles_Task<%= taskRow.ID %>" class="nav-item"><a class="nav-link" data-toggle="tab" href="#tabFiles_Task<%= taskRow.ID %>" role="tab" aria-controls="tabFiles_Task<%= taskRow.ID %>" aria-selected="false">Вложения</a></li>
+																	  <li id="mnutabLog_Task<%= taskRow.ID %>" class="nav-item"><a class="nav-link" data-toggle="tab" href="#tabLog_Task<%= taskRow.ID %>" role="tab" aria-controls="tabLog_Task<%= taskRow.ID %>" aria-selected="false">Ход исполнения</a></li>
+																	</ul>
+																	<div class="tab-content" style="border: 1px solid red;">
+																	  <div id="tabDoc_Task<%= taskRow.ID %>" class="tab-pane fade show active" role="tabpanel" aria-labelledby="mnutabDoc_Task<%= taskRow.ID %>">
+																	    <h3>Документ</h3>
+																			<div id="docData_Task<%= taskRow.ID %>">
+																				<table class="table">
+																					<tr>
+																						<td>
+																							<table class="table">
+																								<tr>
+																									<td>Тип контроля:</td>
+																									<td><%= taskRow.ControlTypeName %></td>
+																								</tr>
+																								<tr>
+																									<td>Входящий номер:</td>
+																									<td><%= taskRow.InNum %></td>
+																								</tr>
+																								<tr>
+																									<td>Корреспондент:</td>
+																									<td></td>
+																								</tr>
+																								<tr>
+																									<td>Телефон:</td>
+																									<td><%= taskRow.Tel %></td>
+																								</tr>
+																								<tr>
+																									<td>Исходящий номер:</td>
+																									<td><%= taskRow.OutNum %></td>
+																								</tr>
+																								<tr>
+																									<td>Адресат:</td>
+																									<td></td>
+																								</tr>
+																								<tr>
+																									<td>Отв. исполнитель:</td>
+																									<td></td>
+																								</tr>
+																								<tr>
+																									<td>Вид документа:</td>
+																									<td><%= taskRow.DocTypeName %></td>
+																								</tr>
+																								<tr>
+																									<td>Краткое содержание:</td>
+																									<td><%= taskRow.ShortContent %></td>
+																								</tr>
+																								<tr>
+																									<td>Лист./Прил./Другое:</td>
+																									<td></td>
+																								</tr>
+																								<tr>
+																									<td>Вид доставки:</td>
+																									<td></td>
+																								</tr>
+																								<tr>
+																									<td>Получен в ответ на:	</td>
+																									<td></td>
+																								</tr>
+																								<tr>
+																									<td>К документу:</td>
+																									<td></td>
+																								</tr>
+																								<tr>
+																									<td>Отправлены ответные*:</td>
+																									<td></td>
+																								</tr>
+																								<tr>
+																									<td>Дело:</td>
+																									<td></td>
+																								</tr>
+																								<tr>
+																									<td>Том:</td>
+																									<td></td>
+																								</tr>
+																								<tr>
+																									<td>Акты:</td>
+																									<td></td>
+																								</tr>
+																							</table>
+																						</td>
+																						<td>
+																							<table class="table">
+																								<tr>
+																									<td>Срок исполнения:</td>
+																									<td></td>
+																								</tr>
+																								<tr>
+																									<td>От:</td>
+																									<td><%= taskRow.DocDate %></td>
+																								</tr>
+																								<tr>
+																									<td>Автор:</td>
+																									<td></td>
+																								</tr>
+																								<tr>
+																									<td>Email:</td>
+																									<td></td>
+																								</tr>
+																								<tr>
+																									<td>От:</td>
+																									<td></td>
+																								</tr>
+																								<tr>
+																									<td>Характер вопроса:</td>
+																									<td></td>
+																								</tr>
+																								<tr>
+																									<td>Язык документа:</td>
+																									<td></td>
+																								</tr>
+																								<tr>
+																									<td>Отправлены промежуточные*:</td>
+																									<td></td>
+																								</tr>
+																								<tr>
+																									<td>Листы:</td>
+																									<td></td>
+																								</tr>
+																							</table>
+																						</td>
+																					</tr>
+																				</table>
+																			</div>
+																	  </div>
+																	  <div id="tabFiles_Task<%= taskRow.ID %>" class="tab-pane fade" role="tabpanel" aria-labelledby="tabFiles_Task<%= taskRow.ID %>">
+																	    <h3>Вложения</h3>
+																			<div id="files_Task<%= taskRow.ID %>">
+																				<p>Здесь будет список вложенных файлов. При клике на них, отобразится модальное окно с содержимым файла</p>
+																			</div>
+																	  </div>
+																	  <div id="tabLog_Task<%= taskRow.ID %>" class="tab-pane fade" role="tabpanel" aria-labelledby="tabLog_Task<%= taskRow.ID %>">
+																	    <h3>Ход исполнения</h3>
+																			<div id="log_Task<%= taskRow.ID %>">
+																				<p>Здесь будет дерево поручений, чтобы видеть как задание футболится между сотрудниками разных должностей</p>
+																			</div>
+																	  </div>
+																	</div>
+																</div>
+															</div>
+														</td>
+													</tr>
+												<% }); %>
+											</tbody>
+										</table>
+									<% } %>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
 				<!-- HTML-код модального окна -->
 				<div id="myModalBox" class="modal fade">
 				  <div class="modal-dialog">

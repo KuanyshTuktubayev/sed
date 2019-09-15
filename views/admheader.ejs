@@ -1,2 +1,13 @@
-<h6 style="padding-right: 5px;"><%= adminLogin %></h6>
-<a href="/exit" class="btn btn-primary pull-right">Выйти</a>
+<ul class="navbar-nav">
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="mnuLogin" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <h6 class="btn btn-outline-secondary pull-right"><%= adminLogin %></h6>
+    </a>
+    <div class="dropdown-menu" aria-labelledby="mnuLogin">
+      <a class="dropdown-item" href="/admin/changepwd">Сменить пароль</a>
+      <a class="dropdown-item" href="/admin/lang">Язык</a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="/exit">Выйти</a>
+    </div>
+  </li>
+</ul>

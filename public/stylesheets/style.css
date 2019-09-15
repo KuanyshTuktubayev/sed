@@ -1,8 +1,19 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  padding: 10px;
+  font: 12px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+
+
+
+.row_split{
+  height: 50vh; /*500px;*/
+}
+.vsplitbar {
+	width: 4px;
+	background: red;
 }
